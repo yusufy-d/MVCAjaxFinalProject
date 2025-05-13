@@ -15,7 +15,7 @@ namespace Sube1.HelloMVC.Controllers
             ctx = context;
         }
 
-        public ViewResult Index()//Action
+        public ViewResult Index()
         {
             return View("AnaSayfa");
         }
