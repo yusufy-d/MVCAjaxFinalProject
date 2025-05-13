@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Öğrenci Sil (Ajax Yöntemi)";
+}
+
+<div class="container">
+    <h1>Öğrenci Sil (Ajax Yöntemi)</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form id="ogrenciSilForm">
+                <div class="mb-3">
+                    <label for="silId" class="form-label">Silinecek Öğrenci ID</label>
+                    <input type="number" class="form-control" id="silId" name="silId" min="1" required />
+                </div>
+                <button type="submit" class="btn btn-danger">Sil</button>
+                <a href="/Ogrenci/OgrenciListe" class="btn btn-secondary">Öğrenci Listesine Dön</a>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div id="sonucMesaji" class="alert" style="display:none;"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            $("#ogrenciSilForm").on("submit", function(e) {
+                e.preventDefault();
+
+                const id = parseInt($("#silId").val(), 10);
+                const btn = $(this).find("button[type=submit]");
+                btn.prop("disabled", true).text("Siliniyor…");
+
+                $.ajax({
+                    url: "/Ogrenci/OgrenciSilAjax",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(id)
+                })
+                .done(function(res) {
+                    const alertBox = $("#sonucMesaji")
+                        .removeClass("alert-success alert-danger")
+                        .addClass(res.success ? "alert-success" : "alert-danger")
+                        .html(res.message)
+                        .show();
+                    if (res.success) {
+                        $("#ogrenciSilForm")[0].reset();
+                    }
+                })
+                .fail(function(xhr) {
+                    $("#sonucMesaji")
+                        .removeClass("alert-success")
+                        .addClass("alert-danger")
+                        .html("Silme işlemi sırasında bir hata oluştu.")
+                        .show();
+                })
+                .always(function() {
+                    btn.prop("disabled", false).text("Sil");
+                });
+            });
+        });
+    </script>
+}

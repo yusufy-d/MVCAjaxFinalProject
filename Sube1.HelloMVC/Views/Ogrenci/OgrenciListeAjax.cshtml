@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Öğrenci Listesi (Ajax Yöntemi)";
+}
+
+<div class="container">
+    <h1>Öğrenci Listesi (Ajax Yöntemi)</h1>
+
+    <div class="mb-3">
+        <button id="btnYukle" class="btn btn-primary">Listeyi Getir</button>
+        <a href="/Ogrenci/OgrenciListe" class="btn btn-secondary">Normal Listeye Dön</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Öğrenci ID</th>
+                <th>Ad</th>
+                <th>Soyad</th>
+            </tr>
+        </thead>
+        <tbody id="ogrenciListesiTbody">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            function listeyiGetir() {
+                const btn = $("#btnYukle");
+                const tbody = $("#ogrenciListesiTbody");
+
+                tbody.empty();
+                btn.prop("disabled", true).text("Yükleniyor…");
+
+                $.getJSON("/Ogrenci/OgrenciListeAjax")
+                    .done(function(data) {
+                        if (!data || data.length === 0) {
+                            tbody.append(
+                                '<tr><td colspan="3" class="text-center">Kayıt bulunamadı.</td></tr>'
+                            );
+                        } else {
+                            $.each(data, function(_, o) {
+                                tbody.append(`
+                                    <tr>
+                                        <td>${o.ogrenciid}</td>
+                                        <td>${o.ad}</td>
+                                        <td>${o.soyad}</td>
+                                    </tr>
+                                `);
+                            });
+                        }
+                    })
+                    .fail(function() {
+                        tbody.append(
+                            '<tr><td colspan="3" class="text-center text-danger">Liste yüklenirken hata oluştu.</td></tr>'
+                        );
+                    })
+                    .always(function() {
+                        btn.prop("disabled", false).text("Listeyi Getir");
+                    });
+            }
+
+            listeyiGetir();
+
+            $("#btnYukle").on("click", listeyiGetir);
+        });
+    </script>
+}
