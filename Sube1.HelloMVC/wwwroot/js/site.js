@@ -1,31 +1,25 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// Öğrenci CRUD işlemleri için jQuery Ajax fonksiyonları
 
 $(document).ready(function () {
-    // Sayfa yüklendiğinde öğrenci listesini getir
     loadOgrenciListesi();
     
-    // Form submit olayını engelle ve Ajax ile gönder
     $("#ogrenciEkleForm").on("submit", function (e) {
         e.preventDefault();
         ekleOgrenci();
     });
     
-    // Güncellenecek öğrencinin bilgilerini form içine yükle
     $(document).on("click", ".btn-duzenle", function () {
         const id = $(this).data("id");
         getOgrenciById(id);
     });
     
-    // Güncelleme formunun submit olayını engelle ve Ajax ile gönder
     $("#ogrenciGuncelleForm").on("submit", function (e) {
         e.preventDefault();
         guncelleOgrenci();
     });
     
-    // Öğrenci silme işlemi
     $(document).on("click", ".btn-sil", function () {
         const id = $(this).data("id");
         if (confirm("Bu öğrenciyi silmek istediğinize emin misiniz?")) {
@@ -34,7 +28,6 @@ $(document).ready(function () {
     });
 });
 
-// Tüm öğrencileri getir ve tabloya doldur
 function loadOgrenciListesi() {
     $.ajax({
         url: "/Ogrenci/OgrenciListeAjax",
@@ -63,14 +56,12 @@ function loadOgrenciListesi() {
     });
 }
 
-// ID'ye göre öğrenci bilgilerini getir
 function getOgrenciById(id) {
     $.ajax({
         url: `/Ogrenci/OgrenciGetirAjax?id=${id}`,
         type: "GET",
         contentType: "application/json",
         success: function (data) {
-            // Düzenleme formunu göster ve verileri doldur
             $("#guncelleId").val(data.ogrenciid);
             $("#guncelleAd").val(data.ad);
             $("#guncelleSoyad").val(data.soyad);
@@ -83,7 +74,6 @@ function getOgrenciById(id) {
     });
 }
 
-// Yeni öğrenci ekle
 function ekleOgrenci() {
     const ogrenci = {
         ad: $("#ekleAd").val(),
@@ -100,7 +90,7 @@ function ekleOgrenci() {
                 alert(response.message);
                 $("#ekleModal").modal('hide');
                 $("#ogrenciEkleForm")[0].reset();
-                loadOgrenciListesi(); // Listeyi yenile
+                loadOgrenciListesi(); 
             } else {
                 alert(response.message);
             }
@@ -112,7 +102,6 @@ function ekleOgrenci() {
     });
 }
 
-// Öğrenci güncelle
 function guncelleOgrenci() {
     const ogrenci = {
         ogrenciid: $("#guncelleId").val(),
@@ -129,7 +118,7 @@ function guncelleOgrenci() {
             if (response.success) {
                 alert(response.message);
                 $("#guncelleModal").modal('hide');
-                loadOgrenciListesi(); // Listeyi yenile
+                loadOgrenciListesi(); 
             } else {
                 alert(response.message);
             }
@@ -141,7 +130,6 @@ function guncelleOgrenci() {
     });
 }
 
-// Öğrenci sil
 function silOgrenci(id) {
     $.ajax({
         url: "/Ogrenci/OgrenciSilAjax",
@@ -151,7 +139,7 @@ function silOgrenci(id) {
         success: function (response) {
             if (response.success) {
                 alert(response.message);
-                loadOgrenciListesi(); // Listeyi yenile
+                loadOgrenciListesi();
             } else {
                 alert(response.message);
             }
